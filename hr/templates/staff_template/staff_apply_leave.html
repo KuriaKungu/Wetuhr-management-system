@@ -1,0 +1,102 @@
+{% extends 'staff_template/base_template.html' %}
+
+{% block page_title %}
+Leave Report and Application History
+{% endblock page_title %}
+
+{% block main_content %}
+<!-- Main content -->
+<section class="content">
+  <div class="container-fluid">
+
+    <div class="row">
+      <div class="col-md-12">
+
+        <!-- Leave Application Form -->
+        <div class="card card-primary">
+          <div class="card-header" style="background-color: #007bff; color: white;">
+            <h3 class="card-title">Apply for Leave</h3>
+          </div>
+
+          <!-- Form Start -->
+          <form action="" method="post">
+            <div class="card-body">
+              <div class="form-group">
+                <label for="leave_date">Leave Date</label>
+                {% csrf_token %}
+                <input type="date" name="leave_date" id="leave_date" class="form-control" placeholder="Leave Date" required>
+              </div>
+
+              <div class="form-group">
+                <label for="leave_msg">Leave Reason</label>
+                <textarea class="form-control" rows="6" name="leave_msg" id="leave_msg" placeholder="Enter the reason for leave" required></textarea>
+              </div>
+
+              <div class="form-group">
+                {% if messages %}
+                  {% for message in messages %}
+                    {% if message.tags == 'error' %}
+                      <div class="alert alert-danger mt-3">{{ message }}</div>
+                    {% elif message.tags == 'success' %}
+                      <div class="alert alert-success mt-3">{{ message }}</div>
+                    {% endif %}
+                  {% endfor %}
+                {% endif %}
+              </div>
+            </div>
+            <!-- /.card-body -->
+
+            <div class="card-footer" style="background-color: #007bff;">
+              <button type="submit" class="btn btn-light btn-block">Apply for Leave</button>
+            </div>
+          </form>
+        </div>
+        <!-- /.card -->
+
+        <!-- Leave Application History -->
+        <div class="card card-primary mt-4">
+          <div class="card-header" style="background-color: #007bff; color: white;">
+            <h3 class="card-title">Leave Application History</h3>
+          </div>
+
+          <div class="card-body p-0">
+            <div class="table-responsive">
+              <table class="table table-bordered table-hover">
+                <thead class="thead-light" style="background-color: #f8f9fa;">
+                  <tr>
+                    <th>ID</th>
+                    <th>Leave Date</th>
+                    <th>Leave Message</th>
+                    <th>Leave Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for row in leave_data %}
+                    <tr>
+                      <td>{{ row.id }}</td>
+                      <td>{{ row.leave_date }}</td>
+                      <td>{{ row.leave_message }}</td>
+                      <td>
+                        {% if row.leave_status == 1 %}
+                          <span class="badge badge-success">Approved</span>
+                        {% elif row.leave_status == 2 %}
+                          <span class="badge badge-danger">Rejected</span>
+                        {% else %}
+                          <span class="badge badge-warning">Pending</span>
+                        {% endif %}
+                      </td>
+                    </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <!-- /.card -->
+
+      </div>
+    </div>
+  </div>
+</section>
+<!-- /.content -->
+{% endblock main_content %}

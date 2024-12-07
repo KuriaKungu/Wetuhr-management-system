@@ -1,0 +1,61 @@
+{% extends 'admin_template/base_template.html' %}
+{% block page_title %}
+Add Department
+{% endblock page_title %}
+
+{% load static %}
+
+{% block main_content %}
+<!-- Main content -->
+<section class="content">
+  <div class="container-fluid">
+    <div class="row justify-content-center">
+      <!-- Left Column: Add Department Form -->
+      <div class="col-md-8">
+        <div class="card shadow-lg rounded">
+          <div class="card-header bg-primary text-white">
+            <h3 class="card-title mb-0">Add Department</h3>
+          </div>
+          <!-- /.card-header -->
+
+          <!-- Form Start -->
+          <form action="" method="post">
+            {% csrf_token %}
+            <div class="card-body">
+              <!-- Department Name Input -->
+              <div class="form-group">
+                <label for="department_name">Department Name</label>
+                <input type="text" class="form-control" name="department" id="department_name" placeholder="Enter Department" required>
+              </div>
+
+              <!-- Error/Success Messages -->
+              <div class="form-group">
+                {% if messages %}
+                  {% for message in messages %}
+                    {% if message.tags == 'error' %}
+                      <div class="alert alert-danger" style="margin-top: 10px;">{{ message }}</div>
+                    {% elif message.tags == 'success' %}
+                      <div class="alert alert-success" style="margin-top: 10px;">{{ message }}</div>
+                    {% endif %}
+                  {% endfor %}
+                {% endif %}
+              </div>
+            </div>
+            <!-- /.card-body -->
+
+            <!-- Submit Button -->
+            <div class="card-footer">
+              <button type="submit" class="btn btn-primary btn-block">Add Department</button>
+            </div>
+          </form>
+          <!-- /.form -->
+        </div>
+        <!-- /.card -->
+      </div>
+      <!-- /.col -->
+    </div>
+    <!-- /.row -->
+  </div>
+</section>
+<!-- /.content -->
+{% endblock main_content %}

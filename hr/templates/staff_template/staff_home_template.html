@@ -1,0 +1,190 @@
+{% extends 'staff_template/base_template.html' %}
+{% block page_title %}
+Home
+{% endblock page_title %}
+{% block main_content %}
+<!-- Main content -->
+<section class="content">
+    <div class="container-fluid">
+        <!-- Small boxes (Stat box) -->
+        <div class="row">
+            <div class="col-lg-4 col-6">
+                <!-- small box -->
+                <div class="small-box bg-info">
+                    <div class="inner">
+                        <h3>{{ total_leaves }}</h3>
+                        <p>Total Leaves Applied</p>
+                    </div>
+                    <div class="icon">
+                        <i class="ion ion-pray"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-6">
+                <!-- small box -->
+                <div class="small-box bg-warning">
+                    <div class="inner">
+                        <h3>{{ notifications }}</h3>
+                        <p>Notifications</p>
+                    </div>
+                    <div class="icon">
+                        <i class="ion ion-bell"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-6">
+                <!-- small box -->
+                <div class="small-box bg-success">
+                    <div class="inner">
+                        <h3>{{ feedback_count }}</h3>
+                        <p>Feedback</p>
+                    </div>
+                    <div class="icon">
+                        <i class="ion ion-chatbubbles"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- /.row -->
+
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card card-danger">
+                    <div class="card-header">
+                        <h3 class="card-title">Staff Attendance vs Leaves</h3>
+                        <div class="card-tools">
+                            <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
+                            <button type="button" class="btn btn-tool" data-card-widget="remove"><i class="fas fa-times"></i></button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="chart">
+                            <canvas id="barChart1" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
+                        </div>
+                    </div>
+                    <!-- /.card-body -->
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- /.content -->
+{% endblock main_content %}
+
+{% block custom_js %}
+<script>
+    $(document).ready(function(){
+        // Staff Attendance vs Leaves Bar Chart
+        var attendance_present_list_staff = {{ attendance_present_list_staff }};
+        var attendance_absent_list_staff = {{ attendance_absent_list_staff }};
+        var barChartData = {
+            labels: ['Attendance', 'Leaves'],
+            datasets: [
+                {
+                    label: 'Count',
+                    backgroundColor: ['rgba(60,141,188,0.9)', 'rgba(210, 214, 222, 1)'],
+                    borderColor: ['rgba(60,141,188,0.8)', 'rgba(210, 214, 222, 1)'],
+                    pointRadius: false,
+                    pointColor: '#3b8bba',
+                    pointStrokeColor: 'rgba(60,141,188,1)',
+                    pointHighlightFill: '#fff',
+                    pointHighlightStroke: 'rgba(60,141,188,1)',
+                    data: [attendance_present_list_staff, attendance_absent_list_staff]
+                }
+            ]
+        };
+
+        var barChartCanvas = $('#barChart1').get(0).getContext('2d');
+        var barChartOptions = {
+            responsive: true,
+            maintainAspectRatio: false,
+            datasetFill: false
+        };
+
+        var barChart = new Chart(barChartCanvas, {
+            type: 'bar',
+            data: barChartData,
+            options: barChartOptions
+        });
+    });
+</script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-analytics.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-messaging.js"></script>
+<script>
+
+    var firebaseConfig = {
+        apiKey: "AIzaSyBwqY2ru4AHb9gvcwZ-TI8xQjbUKIM9YnI",
+        authDomain: "hr-management-system-6b541.firebaseapp.com",
+        projectId: "hr-management-system-6b541",
+        storageBucket: "hr-management-system-6b541.appspot.com",
+        messagingSenderId: "140280377124",
+        appId: "1:140280377124:web:97f9c2b4a17029229a4db1",
+        measurementId: "G-PBDXE5E9LE"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const messaging=firebase.messaging();
+
+    function IntitalizeFireBaseMessaging() {
+        messaging
+            .requestPermission()
+            .then(function () {
+                console.log("Notification Permission");
+                return messaging.getToken();
+            })
+            .then(function (token) {
+                console.log("Token : "+token);
+                sendToServer(token);
+            })
+            .catch(function (reason) {
+                console.log(reason);
+            });
+    }
+
+    messaging.onMessage(function (payload) {
+        console.log(payload);
+        const notificationOption={
+            body:payload.notification.body,
+            icon:payload.notification.icon
+        };
+
+        if(Notification.permission==="granted"){
+            var notification=new Notification(payload.notification.title,notificationOption);
+
+            notification.onclick=function (ev) {
+                ev.preventDefault();
+                window.open(payload.notification.click_action,'_blank');
+                notification.close();
+            }
+        }
+
+    });
+    messaging.onTokenRefresh(function () {
+        messaging.getToken()
+            .then(function (newtoken) {
+                console.log("New Token : "+ newtoken);
+                sendToServer(newtoken);
+            })
+            .catch(function (reason) {
+                console.log(reason);
+            })
+    });
+
+    function sendToServer(token){
+         $.ajax({
+                url:'{% url "staff_fcmtoken_save" %}',
+                type:'POST',
+                data:{token:token},
+            })
+            .done(function(response){
+                if(response=="True"){
+                    console.log("Token Save");
+                }
+                else{
+                    console.log("Error in Token Save");
+                }
+            });
+    }
+    IntitalizeFireBaseMessaging();
+</script>
+{% endblock custom_js %}

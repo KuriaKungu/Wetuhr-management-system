@@ -1,0 +1,247 @@
+{% extends 'hod_template/base_template.html' %}
+
+{% block page_title %}
+Home
+{% endblock page_title %}
+
+{% block main_content %}
+<!-- Main content -->
+<section class="content">
+    <div class="container-fluid">
+        <!-- Statistics Row -->
+        <div class="row">
+            <div class="col-lg-12 col-6">
+                <!-- Small Box -->
+                <div class="small-box bg-info">
+                    <div class="inner">
+                        <h3>{{ staff_count }}</h3>
+                        <p>Total Staff Under Me</p>
+                    </div>
+                    <div class="icon">
+                        <i class="ion ion-person"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- /Statistics Row -->
+
+        <!-- Attendance Section -->
+        <div class="row">
+            <!-- Take Attendance Card -->
+            <div class="col-lg-12">
+                <div class="card card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title">Take Attendance</h3>
+                        <div class="card-tools">
+                            <a href="{% url 'hod_take_attendance' %}" class="btn btn-tool">
+                                <i class="fas fa-arrow-right"></i>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <p>Click the button below to take attendance for today.</p>
+                        <a href="{% url 'hod_take_attendance' %}" class="btn btn-primary">Take Attendance</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- /Attendance Section -->
+
+        <!-- Charts Section -->
+        <div class="row">
+            <!-- HOD Attendance vs Leaves Bar Chart -->
+            <div class="col-lg-12">
+                <div class="card card-danger">
+                    <div class="card-header">
+                        <h3 class="card-title">HOD Attendance vs Leaves</h3>
+                        <div class="card-tools">
+                            <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
+                            <button type="button" class="btn btn-tool" data-card-widget="remove"><i class="fas fa-times"></i></button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="chart">
+                            <canvas id="hodBarChart" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Staff Attendance vs Leaves Bar Chart -->
+            <div class="col-lg-12">
+                <div class="card card-danger">
+                    <div class="card-header">
+                        <h3 class="card-title">Staff Attendance vs Leaves</h3>
+                        <div class="card-tools">
+                            <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
+                            <button type="button" class="btn btn-tool" data-card-widget="remove"><i class="fas fa-times"></i></button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="chart">
+                            <canvas id="staffBarChart" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- HOD Attendance vs Leaves Pie Chart -->
+            <div class="col-lg-12">
+                <div class="card card-success">
+                    <div class="card-header">
+                        <h3 class="card-title">HOD Attendance vs Leaves</h3>
+                        <div class="card-tools">
+                            <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
+                            <button type="button" class="btn btn-tool" data-card-widget="remove"><i class="fas fa-times"></i></button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="chart">
+                            <canvas id="hodPieChart" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- /Charts Section -->
+    </div>
+</section>
+<!-- /.content -->
+{% endblock main_content %}
+
+{% block custom_js %}
+<script>
+    $(document).ready(function(){
+        // HOD Attendance vs Leaves Bar Chart
+        var hodBarChartData = {
+            labels: ['HOD'],
+            datasets: [
+                {
+                    label: 'Clock In',
+                    backgroundColor: 'rgba(60,141,188,0.9)',
+                    borderColor: 'rgba(60,141,188,0.8)',
+                    data: [{{ hod_clock_in_count }}]
+                },
+                {
+                    label: 'Clock Out',
+                    backgroundColor: 'rgba(210, 214, 222, 1)',
+                    borderColor: 'rgba(210, 214, 222, 1)',
+                    data: [{{ hod_clock_out_count }}]
+                },
+                {
+                    label: 'Leaves',
+                    backgroundColor: 'rgba(255, 99, 132, 0.9)',
+                    borderColor: 'rgba(255, 99, 132, 0.8)',
+                    data: [{{ hod_leave_count }}]
+                },
+            ]
+        };
+
+        var hodBarChartCanvas = $('#hodBarChart').get(0).getContext('2d');
+        var hodBarChartOptions = {
+            responsive: true,
+            maintainAspectRatio: false,
+            datasetFill: false
+        };
+
+        new Chart(hodBarChartCanvas, {
+            type: 'bar',
+            data: hodBarChartData,
+            options: hodBarChartOptions
+        });
+
+        // Staff Attendance vs Leaves Bar Chart
+        var staffBarChartData = {
+            labels: {{ staff_name_list|safe }},
+            datasets: [
+                {
+                    label: 'Clock In',
+                    backgroundColor: 'rgba(60,141,188,0.9)',
+                    borderColor: 'rgba(60,141,188,0.8)',
+                    data: {{ staff_clock_in_list|safe }}
+                },
+                {
+                    label: 'Clock Out',
+                    backgroundColor: 'rgba(210, 214, 222, 1)',
+                    borderColor: 'rgba(210, 214, 222, 1)',
+                    data: {{ staff_clock_out_list|safe }}
+                },
+                {
+                    label: 'Leaves',
+                    backgroundColor: 'rgba(255, 99, 132, 0.9)',
+                    borderColor: 'rgba(255, 99, 132, 0.8)',
+                    data: {{ staff_leave_list|safe }}
+                },
+            ]
+        };
+
+        var staffBarChartCanvas = $('#staffBarChart').get(0).getContext('2d');
+        var staffBarChartOptions = {
+            responsive: true,
+            maintainAspectRatio: false,
+            datasetFill: false
+        };
+
+        new Chart(staffBarChartCanvas, {
+            type: 'bar',
+            data: staffBarChartData,
+            options: staffBarChartOptions
+        });
+
+        // HOD Attendance vs Leaves Pie Chart
+        var hodPieChartData = {
+            labels: ['Attendance', 'Leaves'],
+            datasets: [{
+                data: [{{ total_hod_attendance }}, {{ total_hod_leaves }}],
+                backgroundColor: ['#3c8dbc', '#f56954'],
+            }]
+        };
+
+        var hodPieChartCanvas = $('#hodPieChart').get(0).getContext('2d');
+        var hodPieChartOptions = {
+            responsive: true,
+            maintainAspectRatio: false,
+        };
+
+        new Chart(hodPieChartCanvas, {
+            type: 'pie',
+            data: hodPieChartData,
+            options: hodPieChartOptions
+        });
+    });
+</script>
+
+<!-- Firebase JS SDK -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-analytics.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-messaging.js"></script>
+<script>
+    var firebaseConfig = {
+        apiKey: "AIzaSyBwqY2ru4AHb9gvcwZ-TI8xQjbUKIM9YnI",
+        authDomain: "hr-management-system-6b541.firebaseapp.com",
+        projectId: "hr-management-system-6b541",
+        storageBucket: "hr-management-system-6b541.appspot.com",
+        messagingSenderId: "140280377124",
+        appId: "1:140280377124:web:97f9c2b4a17029229a4db1",
+        measurementId: "G-PBDXE5E9LE"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const messaging = firebase.messaging();
+
+    function IntitalizeFireBaseMessaging() {
+        messaging.requestPermission()
+            .then(function () {
+                return messaging.getToken();
+            })
+            .then(function (token) {
+                sendToServer(token);
+            })
+            .catch(function (reason) {
+                alert("Permission for notifications is denied. " + reason);
+            });
+    }
+    IntitalizeFireBaseMessaging();
+</script>
+
+{% endblock custom_js %}

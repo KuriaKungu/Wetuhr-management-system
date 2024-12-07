@@ -1,0 +1,69 @@
+{% extends 'hod_template/base_template.html' %}
+
+{% block page_title %}
+Take Attendance
+{% endblock page_title %}
+
+{% block main_content %}
+<!-- Main content -->
+<section class="content">
+    <div class="container-fluid">
+        <!-- Attendance Form Section -->
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title">Take Attendance</h3>
+                    </div>
+                    <!-- /.card-header -->
+
+                    <!-- Form Start -->
+                    <form method="POST">
+                        {% csrf_token %}
+                        <div class="card-body">
+                            <!-- Attendance Date -->
+                            <div class="form-group">
+                                <label for="attendance_date">Attendance Date</label>
+                                <input type="date" class="form-control" name="attendance_date" required>
+                            </div>
+
+                            <!-- Clock In -->
+                            <div class="form-group">
+                                <label for="clock_in">Clock In</label>
+                                <input type="time" class="form-control" name="clock_in">
+                                <button type="submit" name="action" value="clock_in" class="btn btn-primary btn-block mt-2">Clock In</button>
+                            </div>
+
+                            <!-- Clock Out -->
+                            <div class="form-group">
+                                <label for="clock_out">Clock Out</label>
+                                <input type="time" class="form-control" name="clock_out">
+                                <button type="submit" name="action" value="clock_out" class="btn btn-primary btn-block mt-2">Clock Out</button>
+                            </div>
+
+                            <!-- Messages Section -->
+                            <div class="form-group">
+                                {% if messages %}
+                                    {% for message in messages %}
+                                        {% if message.tags == 'error' %}
+                                            <div class="alert alert-danger mt-3">{{ message }}</div>
+                                        {% endif %}
+                                        {% if message.tags == 'success' %}
+                                            <div class="alert alert-success mt-3">{{ message }}</div>
+                                        {% endif %}
+                                    {% endfor %}
+                                {% endif %}
+                            </div>
+                        </div>
+                        <!-- /.card-body -->
+                    </form>
+                    <!-- /.form end -->
+                </div>
+                <!-- /.card -->
+            </div>
+        </div>
+        <!-- /.row -->
+    </div>
+</section>
+<!-- /.content -->
+{% endblock main_content %}

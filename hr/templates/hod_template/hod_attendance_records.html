@@ -1,0 +1,52 @@
+{% extends 'hod_template/base_template.html' %}
+
+{% block page_title %}
+Attendance Records
+{% endblock page_title %}
+
+{% block main_content %}
+<!-- Main content -->
+<section class="content">
+    <div class="container-fluid">
+        <!-- Attendance Records Section -->
+        <div class="row">
+            <div class="col-md-12">
+                <!-- Card for Attendance Records -->
+                <div class="card card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title">Attendance Records</h3>
+                    </div>
+                    <!-- /.card-header -->
+
+                    <!-- Table for displaying records -->
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>Clock In</th>
+                                        <th>Clock Out</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for attendance in attendances %}
+                                        <tr>
+                                            <td>{{ attendance.attendance_date }}</td>
+                                            <td>{{ attendance.clock_in }}</td>
+                                            <td>{{ attendance.clock_out }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <!-- /.card-body -->
+                </div>
+                <!-- /.card -->
+            </div>
+        </div>
+    </div>
+</section>
+<!-- /.content -->
+{% endblock main_content %}

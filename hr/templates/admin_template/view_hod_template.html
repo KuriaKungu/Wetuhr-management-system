@@ -1,0 +1,83 @@
+{% extends 'admin_template/base_template.html' %}
+{% block page_title %}
+View HOD | Username: {{ hod.admin.username }} | #ID: {{ hod.id }}
+{% endblock page_title %}
+
+{% load static %}
+{% block main_content %}
+<!-- Main content -->
+<section class="content">
+  <div class="container-fluid">
+    <div class="row justify-content-center">
+      <!-- left column -->
+      <div class="col-md-8">
+        <!-- general view HOD -->
+        <div class="card card-primary">
+          <div class="card-header">
+            <h3 class="card-title">View HOD Details</h3>
+          </div>
+          <!-- /.card-header -->
+          <div class="card-body">
+            <!-- HOD Profile Picture (if available) -->
+            <div class="form-group text-center">
+              <label>Profile Picture</label>
+              {% if hod.admin.profile_picture %}
+                <img src="{{ hod.admin.profile_picture.url }}" alt="Profile Image" class="img-thumbnail" width="150">
+              {% else %}
+                <p>No profile picture uploaded.</p>
+              {% endif %}
+            </div>
+
+            <!-- HOD Information -->
+            <div class="form-group">
+              <label>Email Address</label>
+              <p>{{ hod.admin.email }}</p>
+            </div>
+
+            <div class="form-group">
+              <label>First Name</label>
+              <p>{{ hod.admin.first_name }}</p>
+            </div>
+
+            <div class="form-group">
+              <label>Last Name</label>
+              <p>{{ hod.admin.last_name }}</p>
+            </div>
+
+            <div class="form-group">
+              <label>Username</label>
+              <p>{{ hod.admin.username }}</p>
+            </div>
+
+            <div class="form-group">
+              <label>Address</label>
+              <p>{{ hod.address }}</p>
+            </div>
+
+            <div class="form-group">
+              <label>Department</label>
+              <p>{{ hod.department.department_name }}</p>
+            </div>
+
+            <div class="form-group">
+              <label>Gender</label>
+              <p>{{ hod.gender }}</p>
+            </div>
+
+            <!-- Action buttons -->
+            <div class="form-group d-flex justify-content-between">
+              <a href="{% url 'edit_hod' hod_id=hod.id %}" class="btn btn-primary">Edit HOD</a>
+              <!-- Added confirmation on delete action -->
+              <a href="{% url 'delete_hod' hod_id=hod.id %}" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this HOD?');">Delete HOD</a>
+            </div>
+          </div>
+          <!-- /.card-body -->
+        </div>
+        <!-- /.card -->
+      </div>
+      <!-- /.row -->
+    </div>
+  </div>
+</section>
+<!-- /.content -->
+{% endblock main_content %}

@@ -1,0 +1,88 @@
+{% extends 'admin_template/base_template.html' %}
+{% block page_title %}
+View Staff | Username: {{ staff.admin.username }} | #ID: {{ staff.id }}
+{% endblock page_title %}
+
+{% load static %}
+{% block main_content %}
+<!-- Main content -->
+<section class="content">
+  <div class="container-fluid">
+    <div class="row justify-content-center">
+      <!-- left column -->
+      <div class="col-md-8">
+        <!-- general view staff -->
+        <div class="card card-primary">
+          <div class="card-header">
+            <h3 class="card-title">View Staff Details</h3>
+          </div>
+          <!-- /.card-header -->
+          <div class="card-body">
+            <!-- Staff Profile Picture (if available) -->
+            <div class="form-group text-center">
+              <label>Profile Picture</label>
+              {% if staff.admin.profile_picture %}
+                <img src="{{ staff.admin.profile_picture.url }}" alt="Profile Image" class="img-thumbnail" width="150">
+              {% else %}
+                <p>No profile picture uploaded.</p>
+              {% endif %}
+            </div>
+
+            <!-- Staff Information -->
+            <div class="form-group">
+              <label>Email Address</label>
+              <p>{{ staff.admin.email }}</p>
+            </div>
+
+            <div class="form-group">
+              <label>First Name</label>
+              <p>{{ staff.admin.first_name }}</p>
+            </div>
+
+            <div class="form-group">
+              <label>Last Name</label>
+              <p>{{ staff.admin.last_name }}</p>
+            </div>
+
+            <div class="form-group">
+              <label>Username</label>
+              <p>{{ staff.admin.username }}</p>
+            </div>
+
+            <div class="form-group">
+              <label>Address</label>
+              <p>{{ staff.address }}</p>
+            </div>
+
+            <div class="form-group">
+              <label>Department</label>
+              <p>{{ staff.department.department_name }}</p>
+            </div>
+
+            <div class="form-group">
+              <label>Position</label>
+              <p>{{ staff.position }}</p>
+            </div>
+
+            <div class="form-group">
+              <label>Gender</label>
+              <p>{{ staff.gender }}</p>
+            </div>
+
+            <!-- Action buttons -->
+            <div class="form-group d-flex justify-content-between">
+              <a href="{% url 'edit_staff' staff_id=staff.admin.id %}" class="btn btn-primary">Edit Staff</a>
+              <!-- Added confirmation on delete action -->
+              <a href="{% url 'delete_staff' staff_id=staff.admin.id %}" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this staff member?');">Delete Staff</a>
+            </div>
+          </div>
+          <!-- /.card-body -->
+        </div>
+        <!-- /.card -->
+      </div>
+      <!-- /.row -->
+    </div>
+  </div>
+</section>
+<!-- /.content -->
+{% endblock main_content %}

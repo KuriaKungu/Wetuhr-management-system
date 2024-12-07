@@ -1,0 +1,101 @@
+{% load static %}
+
+<aside class="main-sidebar sidebar-dark-primary elevation-4">
+    <!-- Brand Logo -->
+    <a href="#" class="brand-link">
+        <img src="{% static 'dist/img/AdminLTELogo.png' %}" alt="Dashboard" class="brand-image img-circle elevation-3" style="opacity: .8">
+        <span class="brand-text font-weight-light">Dashboard</span>
+    </a>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <!-- Sidebar user panel (optional) -->
+        <div class="user-panel mt-3 pb-3 mb-3 d-flex">
+            <div class="image">
+                <img src="{% static 'dist/img/user2-160x160.jpg' %}" class="img-circle elevation-2" alt="User Image">
+            </div>
+            <div class="info">
+                <a href="{% url 'hod_profile' %}" class="d-block">{{ user.username }}</a>
+            </div>
+        </div>
+
+        <!-- Sidebar Menu -->
+        <nav class="mt-2">
+            <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+                <!-- Home Link -->
+                <li class="nav-item">
+                    {% url 'hod_home' as hod_home %}
+                    <a href="{{ hod_home }}" class="nav-link {% if request.path == hod_home %} active {% endif %}">
+                        <i class="nav-icon fas fa-home"></i>
+                        <p>Home</p>
+                    </a>
+                </li>
+
+                <!-- Manage Staff Link -->
+                <li class="nav-item">
+                    {% url 'hod_manage_staff' as hod_manage_staff %}
+                    <a href="{{ hod_manage_staff }}" class="nav-link {% if request.path == hod_manage_staff %} active {% endif %}">
+                        <i class="nav-icon fas fa-users-cog"></i>
+                        <p>Manage Staff</p>
+                    </a>
+                </li>
+
+                <!-- Attendance Dropdown -->
+                <li class="nav-item has-treeview {% if 'attendance' in request.path %} menu-open {% endif %}">
+                    <a href="#" class="nav-link {% if 'attendance' in request.path %} active {% endif %}">
+                        <i class="nav-icon fas fa-calendar-check"></i>
+                        <p>
+                            Attendance
+                            <i class="right fas fa-angle-left"></i>
+                        </p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            {% url 'hod_take_attendance' as hod_take_attendance %}
+                            <a href="{{ hod_take_attendance }}" class="nav-link {% if request.path == hod_take_attendance %} active {% endif %}">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Take Attendance</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            {% url 'hod_attendance_records' as hod_attendance_records %}
+                            <a href="{{ hod_attendance_records }}" class="nav-link {% if request.path == hod_attendance_records %} active {% endif %}">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Attendance Records</p>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+
+                <!-- Feedback Link -->
+                <li class="nav-item">
+                    {% url 'hod_feedback' as hod_feedback %}
+                    <a href="{{ hod_feedback }}" class="nav-link {% if request.path == hod_feedback %} active {% endif %}">
+                        <i class="nav-icon fas fa-comments"></i>
+                        <p>Feedback</p>
+                    </a>
+                </li>
+
+                <!-- Leave Requests Link -->
+                <li class="nav-item">
+                    {% url 'hod_apply_leave' as hod_apply_leave %}
+                    <a href="{{ hod_apply_leave }}" class="nav-link {% if request.path == hod_apply_leave %} active {% endif %}">
+                        <i class="nav-icon fas fa-sun"></i>
+                        <p>Apply Leave</p>
+                    </a>
+                </li>
+
+                <!-- Notification Link -->
+                <li class="nav-item">
+                    {% url 'hod_all_notification' as hod_all_notification %}
+                    <a href="{{ hod_all_notification }}" class="nav-link {% if request.path == hod_all_notification %} active {% endif %}">
+                        <i class="nav-icon fas fa-bell"></i>
+                        <p>Notifications</p>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+        <!-- /.sidebar-menu -->
+    </div>
+    <!-- /.sidebar -->
+</aside>

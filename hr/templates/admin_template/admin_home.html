@@ -1,0 +1,253 @@
+{% extends 'admin_template/base_template.html' %}
+{% block page_title %}
+Home
+{% endblock page_title %}
+{% block main_content %}
+<!-- Main content -->
+<section class="content">
+    <div class="container-fluid">
+        <!-- Small boxes (Stat box) -->
+        <div class="row">
+            <div class="col-lg-4 col-6">
+                <!-- small box -->
+                <div class="small-box bg-info shadow-sm rounded">
+                    <div class="inner">
+                        <h3 class="font-weight-bold">{{ hod_count }}</h3>
+                        <p class="text-uppercase">Total HODs</p>
+                    </div>
+                    <div class="icon">
+                        <i class="ion ion-person-stalker"></i>
+                    </div>
+                    <a href="{% url 'manage_hod' %}" class="small-box-footer text-white d-flex align-items-center">
+                        More info <i class="fas fa-arrow-circle-right"></i>
+                    </a>
+                </div>
+            </div>
+            <!-- ./col -->
+            <div class="col-lg-4 col-6">
+                <!-- small box -->
+                <div class="small-box bg-success shadow-sm rounded">
+                    <div class="inner">
+                        <h3 class="font-weight-bold">{{ staff_count }}</h3>
+                        <p class="text-uppercase">Total Staffs</p>
+                    </div>
+                    <div class="icon">
+                        <i class="ion ion-person"></i>
+                    </div>
+                    <a href="{% url 'manage_staff' %}" class="small-box-footer text-white d-flex align-items-center">
+                        More info <i class="fas fa-arrow-circle-right"></i>
+                    </a>
+                </div>
+            </div>
+            <!-- ./col -->
+            <div class="col-lg-4 col-6">
+                <!-- small box -->
+                <div class="small-box bg-warning shadow-sm rounded">
+                    <div class="inner">
+                        <h3 class="font-weight-bold">{{ department_count }}</h3>
+                        <p class="text-uppercase">Total Departments</p>
+                    </div>
+                    <div class="icon">
+                        <i class="ion ion-briefcase"></i>
+                    </div>
+                    <a href="{% url 'manage_department' %}" class="small-box-footer text-white d-flex align-items-center">
+                        More info <i class="fas fa-arrow-circle-right"></i>
+                    </a>
+                </div>
+            </div>
+            <!-- ./col -->
+        </div>
+        <!-- /.row -->
+
+        <!-- Department Staff and HOD Chart -->
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card card-danger shadow-sm">
+                    <div class="card-header">
+                        <h3 class="card-title font-weight-bold">Department Staff and HOD Chart</h3>
+                        <div class="card-tools">
+                            <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
+                            <button type="button" class="btn btn-tool" data-card-widget="remove"><i class="fas fa-times"></i></button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="pieChart" style="height: 250px; width: 100%;"></canvas>
+                    </div>
+                    <!-- /.card-body -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Staff Attendance vs Leaves Chart -->
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card card-success shadow-sm">
+                    <div class="card-header">
+                        <h3 class="card-title font-weight-bold">Staff Attendance vs Leaves</h3>
+                        <div class="card-tools">
+                            <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
+                            <button type="button" class="btn btn-tool" data-card-widget="remove"><i class="fas fa-times"></i></button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="chart">
+                            <canvas id="barChart1" style="height: 250px; width: 100%;"></canvas>
+                        </div>
+                    </div>
+                    <!-- /.card-body -->
+                </div>
+            </div>
+        </div>
+
+        <!-- HOD Attendance vs Leaves Chart -->
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card card-primary shadow-sm">
+                    <div class="card-header">
+                        <h3 class="card-title font-weight-bold">HOD Attendance vs Leaves</h3>
+                        <div class="card-tools">
+                            <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
+                            <button type="button" class="btn btn-tool" data-card-widget="remove"><i class="fas fa-times"></i></button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="chart">
+                            <canvas id="barChart2" style="height: 250px; width: 100%;"></canvas>
+                        </div>
+                    </div>
+                    <!-- /.card-body -->
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- /.content -->
+{% endblock main_content %}
+
+{% block custom_js %}
+<script>
+    $(document).ready(function(){
+        var pieData = {
+            labels: {{ department_name_list|safe }},
+            datasets: [
+                {
+                    data: {{ department_staff_hod_counts|safe }},
+                    backgroundColor: ['#f56954', '#00a65a', '#f39c12', '#00c0ef', '#3c8dbc', '#d2d6de'],
+                }
+            ]
+        };
+
+        var pieChartCanvas = $('#pieChart').get(0).getContext('2d');
+        var pieOptions = {
+            maintainAspectRatio: false,
+            responsive: true,
+        };
+
+        var pieChart = new Chart(pieChartCanvas, {
+            type: 'pie',
+            data: pieData,
+            options: pieOptions
+        });
+
+        // Staff Attendance vs Leaves Bar Chart
+        var attendance_present_list_staff = {{ attendance_present_list_staff }};
+        var attendance_absent_list_staff = {{ attendance_absent_list_staff }};
+        var staff_name_list = {{ staff_name_list|safe }};
+        var barChartDataStaff = {
+            labels: staff_name_list,
+            datasets: [
+                {
+                    label: 'Leaves',
+                    backgroundColor: 'rgba(60,141,188,0.9)',
+                    borderColor: 'rgba(60,141,188,0.8)',
+                    pointRadius: false,
+                    pointColor: '#3b8bba',
+                    pointStrokeColor: 'rgba(60,141,188,1)',
+                    pointHighlightFill: '#fff',
+                    pointHighlightStroke: 'rgba(60,141,188,1)',
+                    data: attendance_absent_list_staff
+                },
+                {
+                    label: 'Attendance',
+                    backgroundColor: 'rgba(210, 214, 222, 1)',
+                    borderColor: 'rgba(210, 214, 222, 1)',
+                    pointRadius: false,
+                    pointColor: 'rgba(210, 214, 222, 1)',
+                    pointStrokeColor: '#c1c7d1',
+                    pointHighlightFill: '#fff',
+                    pointHighlightStroke: 'rgba(220,220,220,1)',
+                    data: attendance_present_list_staff
+                },
+            ]
+        };
+
+        var barChartCanvasStaff = $('#barChart1').get(0).getContext('2d');
+        var temp0Staff = barChartDataStaff.datasets[0];
+        var temp1Staff = barChartDataStaff.datasets[1];
+        barChartDataStaff.datasets[0] = temp1Staff;
+        barChartDataStaff.datasets[1] = temp0Staff;
+
+        var barChartOptions = {
+            responsive: true,
+            maintainAspectRatio: false,
+            datasetFill: false
+        };
+
+        var barChartStaff = new Chart(barChartCanvasStaff, {
+            type: 'bar',
+            data: barChartDataStaff,
+            options: barChartOptions
+        });
+
+        // HOD Attendance vs Leaves Bar Chart
+        var attendance_present_list_hod = {{ attendance_present_list_hod }};
+        var attendance_absent_list_hod = {{ attendance_absent_list_hod }};
+        var hod_name_list = {{ hod_name_list|safe }};
+        var barChartDataHod = {
+            labels: hod_name_list,
+            datasets: [
+                {
+                    label: 'Leaves',
+                    backgroundColor: 'rgba(60,141,188,0.9)',
+                    borderColor: 'rgba(60,141,188,0.8)',
+                    pointRadius: false,
+                    pointColor: '#3b8bba',
+                    pointStrokeColor: 'rgba(60,141,188,1)',
+                    pointHighlightFill: '#fff',
+                    pointHighlightStroke: 'rgba(60,141,188,1)',
+                    data: attendance_absent_list_hod
+                },
+                {
+                    label: 'Attendance',
+                    backgroundColor: 'rgba(210, 214, 222, 1)',
+                    borderColor: 'rgba(210, 214, 222, 1)',
+                    pointRadius: false,
+                    pointColor: 'rgba(210, 214, 222, 1)',
+                    pointStrokeColor: '#c1c7d1',
+                    pointHighlightFill: '#fff',
+                    pointHighlightStroke: 'rgba(220,220,220,1)',
+                    data: attendance_present_list_hod
+                },
+            ]
+        };
+
+        var barChartCanvasHod = $('#barChart2').get(0).getContext('2d');
+        var temp0Hod = barChartDataHod.datasets[0];
+        var temp1Hod = barChartDataHod.datasets[1];
+        barChartDataHod.datasets[0] = temp1Hod;
+        barChartDataHod.datasets[1] = temp0Hod;
+
+        var barChartOptions = {
+            responsive: true,
+            maintainAspectRatio: false,
+            datasetFill: false
+        };
+
+        var barChartHod = new Chart(barChartCanvasHod, {
+            type: 'bar',
+            data: barChartDataHod,
+            options: barChartOptions
+        });
+    });
+</script>
+{% endblock custom_js %}

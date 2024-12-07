@@ -1,0 +1,71 @@
+{% extends 'admin_template/base_template.html' %}
+
+{% block page_title %}
+  HOD Attendance Record
+{% endblock page_title %}
+
+{% block main_content %}
+    <!-- Main content -->
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <!-- <div class="col-sm-6">
+                    <h1 class="m-0">View HOD Attendance</h1>
+                </div> -->
+                <!-- <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="{% url 'admin_home' %}">Home</a></li>
+                        <li class="breadcrumb-item active">View HOD Attendance</li>
+                    </ol>
+                </div> -->
+            </div>
+
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">HOD Attendance Records</h3>
+                        </div>
+                        <div class="card-body">
+                            <table id="hodAttendanceTable" class="table table-bordered table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>HOD Name</th>
+                                        <!-- <th>Total Present</th> -->
+                                        <!-- <th>Total Absent</th> -->
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for hod_attendance in hod_attendance %}
+                                        <tr>
+                                            <td>{{ hod_attendance.hod.admin.get_full_name }}</td>
+                                            <!-- <td>{{ hod_attendance.attendance_present }}</td> -->
+                                            <!-- <td>{{ hod_attendance.attendance_absent }}</td> -->
+                                            <td>
+                                                <a href="#" class="btn btn-sm btn-primary">View Details</a>
+                                            </td>
+                                        </tr>
+                                    {% empty %}
+                                        <tr>
+                                            <td colspan="4">No HOD attendance records found.</td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- /.content -->
+{% endblock main_content %}
+
+{% block custom_scripts %}
+    <script>
+        $(function () {
+            $("#hodAttendanceTable").DataTable();
+        });
+    </script>
+{% endblock custom_scripts %}
