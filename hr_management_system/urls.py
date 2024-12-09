@@ -61,6 +61,10 @@ urlpatterns = [
     path('send_hod_notification',adminviews.send_hod_notification,name="send_hod_notification"),
     path('send_staff_notification',adminviews.send_staff_notification,name="send_staff_notification"),
     path('add_department/', adminviews.add_department, name='add_department'),
+
+    path('add_department/', adminviews.add_department, name='add_department'),
+
+
     # path('add_department_save/', adminviews.add_department_save, name='add_department_save'),
 
     path('manage_department/', adminviews.manage_department, name='manage_department'),

@@ -70,7 +70,6 @@ class HOD(models.Model):
     def __str__(self):
         return f"{self.admin.first_name} {self.admin.last_name} - {self.department.department_name}"
 
-
 class Staff(models.Model):
     admin = models.OneToOneField(CustomUser, on_delete=models.CASCADE, related_name='staff_profile')
     address = models.TextField()

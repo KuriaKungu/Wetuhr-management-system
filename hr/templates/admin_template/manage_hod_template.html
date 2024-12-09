@@ -55,11 +55,7 @@ Manage HOD
                   <td>{{ hod.admin.first_name }}</td>
                   <td>{{ hod.admin.last_name }}</td>
                   <td>
-                      {% if user.hod_profile.profile_pic %}
-                        <img src="{{ user.hod_profile.profile_pic.url }}" alt="Profile Pic" width="50">
-                      {% else %}
-                        <p>No Profile Pic</p>
-                      {% endif %}
+                        <img src="{% static 'dist/img/avatar.png' %}" class="img-circle elevation-2" alt="User Image" style="width: 40px; height: 40px; object-fit: cover; border: 2px solid #007bff; padding: 5px;">
                   </td>
                   <td>{{ hod.admin.username }}</td>
                   <td>{{ hod.address }}</td>
